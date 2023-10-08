@@ -12,3 +12,50 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
+
+(INIT)
+  @color
+  M=0       // color=white
+
+(LOOP)
+  @24576
+  D=M       // D=current key
+  @DRAWWHITE
+  D;JEQ     // if current key = 0, draw white
+  @DRAWBLACK
+  0;JMP     // otherwise, draw black
+
+(DRAWWHITE)
+  @color
+  M=0       // color=white
+  @DRAW
+  0;JMP     // goto DRAW
+
+(DRAWBLACK)
+  @color
+  M=-1      // color=black
+  @DRAW
+  0;JMP     // goto DRAW
+
+(DRAW)
+  @SCREEN
+  D=A       // D=offset
+  @address
+  M=D       // address=offset
+
+(DRAWLOOP)
+  @address
+  D=M
+  @24576
+  D=D-A     // D=address-24576
+  @LOOP
+  D;JGE     // if (address-24576)>=0 goto LOOP
+  @color
+  D=M       // D=color
+  @address
+  A=M       // A=address
+  M=D       // word at address=color
+  @address
+  M=M+1     // address=address+1
+  @DRAWLOOP
+  0;JMP     // goto DRAWLOOP
